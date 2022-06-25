@@ -259,7 +259,7 @@ def GetSummary():
         text += f'🔹 GP：{user.get("gp")}\n'
         text += f'🔹 LV{user.get("level")} / {user.get("race")} / {user.get("career")}\n'
         text += f'🔹 簽到天數：{user.get("signDays")}\n'
-        text += f'🔹 上次登入：{user.get("lastSign")}\n\n'
+        text += f'🔹 上次簽到：{user.get("lastSign")}\n\n'
 
     if Result.Signin != Status.no:
         if Result.Signin == Status.error: text += '❌ 主頁簽到\n'
