@@ -1,0 +1,50 @@
+name: Signin
+
+on:
+  schedule:
+  - cron: "30 */3 * * *"
+
+  workflow_dispatch:
+    inputs:
+      code:
+        description: '2FA Code:'
+        default: "000000"
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4.0.0
+        with:
+          python-version: 3.x
+
+      - run: pip install urllib3 requests
+
+      - uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Asia/Taipei"
+
+      - name: Signin
+        id: signin
+        env:
+          BAHA_USERNAME: ${{ secrets.BAHA_USERNAME }}
+          BAHA_PASSWORD: ${{ secrets.BAHA_PASSWORD }}
+          BAHA_COOKIES: ${{ secrets.BAHA_COOKIES }}
+          BAHA_2FACODE: ${{ github.event.inputs.code }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+        run: python ${GITHUB_WORKSPACE}/bahamut_main.py >> $GITHUB_STEP_SUMMARY
+
+      - uses: hmanzur/actions-set-secret@v2.0.0
+        with:
+          visibility: 'private'
+          name: 'BAHA_COOKIES'
+          value: ${{ env.BAHA_COOKIES }}
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: GitRML/delete-workflow-runs@main
+        with:
+          retain_days: 5
+          keep_minimum_runs: 10
