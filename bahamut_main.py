@@ -55,6 +55,8 @@ class Api():
     HOME_CREATION_DETAIL = f'{DEFAULT_URL}mobile_app/bahamut/v1/home_creation_detail.php'
     ANI_GET_QUESTION = f'{ANIMATE_URL}/ajax/animeGetQuestion.php'
     ANI_ANS_QUESTION = f'{ANIMATE_URL}/ajax/animeAnsQuestion.php'
+    GUILD_MY_GUILD = f'{DEFAULT_URL}guild/v2/guild_my.php'
+    GUILD_SIGN = f'{DEFAULT_URL}guild/v1/guild_sign.php'
 
 
 def CheckLogin():
@@ -225,6 +227,26 @@ def AniAnswer():
         text += f'❌ 動畫瘋\n\n'
 
 
+def GuildSignin():
+    global text
+    r = session.get(Api.GUILD_MY_GUILD)
+    if r.status_code != requests.codes.ok:
+        return
+    list = r.json().get('data').get('list')
+    for guild in list:
+        gsn = guild.get('sn')
+        title = guild.get('title')
+        data =  { 'gsn': gsn }
+        data.update(bahamutCsrfToken)
+        r = session.post(Api.GUILD_SIGN, data = data)
+        if r.status_code != requests.codes.ok:
+            continue
+        statusCode = r.json().get('data').get('statusCode')
+        message = r.json().get('data').get('message')
+        if statusCode != None:
+            text += f'✅ 公會簽到 ({title})\n{message}\n\n'
+
+
 def TG_SendMessage(text):
     try:
         r = requests.get(f'https://api.telegram.org/bot{TG_TOKEN}/sendMessage?chat_id={TG_CHAT}&parse_mode=Markdown&text={text}')
@@ -260,6 +282,7 @@ if __name__ == "__main__":
 
     Signin()
     Signin_AD()
+    GuildSignin()
     AniAnswer()
     
     TG_SendMessage(text)
