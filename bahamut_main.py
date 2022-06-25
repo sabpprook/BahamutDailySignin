@@ -278,9 +278,9 @@ if __name__ == "__main__":
     Profile()
     UpdateCookie()
 
-    if TodaySignin():
-        print(text)
-        sys.exit(0)
+    #if TodaySignin():
+    #    print(text)
+    #    sys.exit(0)
 
     Signin()
     Signin_AD()
