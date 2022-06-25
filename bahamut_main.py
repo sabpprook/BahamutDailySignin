@@ -231,6 +231,7 @@ def GuildSignin():
     global text
     r = session.get(Api.GUILD_MY_GUILD)
     if r.status_code != requests.codes.ok:
+        text += f'❌ 公會簽到\n\n'
         return
     list = r.json().get('data').get('list')
     for guild in list:
@@ -240,6 +241,7 @@ def GuildSignin():
         data.update(bahamutCsrfToken)
         r = session.post(Api.GUILD_SIGN, data = data)
         if r.status_code != requests.codes.ok:
+            text += f'❌ 公會簽到 ({title})\n'
             continue
         statusCode = r.json().get('data').get('statusCode')
         message = r.json().get('data').get('message')
