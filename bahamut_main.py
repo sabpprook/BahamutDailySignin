@@ -395,9 +395,8 @@ if __name__ == "__main__":
 
     text = GetSummary()
     account_info, singin_result = GetSummary_Dict()
-    Discord_SendEmbed(account_info, singin_result)
     if datetime.datetime.now().hour < 8:
         TG_SendMessage(text)
-        # Discord_SendEmbed(account_info, singin_result)
+        Discord_SendEmbed(account_info, singin_result)
     print(text) 
     sys.exit(0)
