@@ -1,4 +1,4 @@
-name: Signin
+name: 巴哈姆特每日簽到
 
 on:
   schedule:
