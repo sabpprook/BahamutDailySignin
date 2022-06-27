@@ -388,7 +388,9 @@ if __name__ == "__main__":
     GuildSignin()
 
     text = GetSummary()
+    account_info, singin_result = GetSummary_Dict()
     if datetime.datetime.now().hour < 3:
         TG_SendMessage(text)
+        Discord_SendEmbed(account_info, singin_result)
     print(text)    
     sys.exit(0)
