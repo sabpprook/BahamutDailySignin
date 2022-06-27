@@ -8,6 +8,7 @@ import enum
 import json
 import time
 import base64
+from typing import Dict
 import urllib3
 import datetime
 import requests
@@ -284,53 +285,52 @@ def GetSummary():
         if Result.Ani_Answer == Status.done:  text += '🔔 動漫瘋答題\n'
     return text
 
-def GetSummary_Dict():
-    account_info = {}
-    singin_result = {}
+def GetDiscordSummary():
+    info = {}
+    result = {}
     user = Result.Profile
-    guild = Result.Guild
     if user.get('login'):
-        account_info['gold'] = user.get('gold')
-        account_info['gp'] = user.get('gp')
-        account_info['level'] = user.get('level')
-        account_info['race'] = user.get('race')
-        account_info['career'] = user.get('career')
-        account_info['signDays'] = user.get('signDays')
-        account_info['lastSign'] = user.get('lastSign')
+        info['gold'] = user.get('gold')
+        info['gp'] = user.get('gp')
+        info['level'] = user.get('level')
+        info['race'] = user.get('race')
+        info['career'] = user.get('career')
+        info['signDays'] = user.get('signDays')
+        info['lastSign'] = user.get('lastSign')
     
+    error_string = ':x: 錯誤'
+    success_string = ':white_check_mark: 成功\n{0}'
+    done_string = ':bell: 已完成'
+
     if Result.Signin != Status.no:
-        if Result.Signin == Status.error: singin_result['signin'] = ':x: 錯誤'
-        if Result.Signin == Status.yes:
-            singin_result['signin'] = ':white_check_mark: 成功' + '\n' + Result.Signin_Msg
-        if Result.Signin == Status.done:  singin_result['signin'] = ':bell: 已完成'
+        if Result.Signin == Status.error: result['signin'] = error_string
+        if Result.Signin == Status.yes:   result['signin'] = success_string.format(Result.Signin_Msg)
+        if Result.Signin == Status.done:  result['signin'] = done_string
     if Result.Signin_AD != Status.no:
-        singin_result['guild_title'] = guild.get('title')
-        if Result.Signin_AD == Status.error:
-            singin_result['signin_ad'] = ':x: 錯誤'
-        if Result.Signin_AD == Status.yes:
-            singin_result['signin_ad'] = ':white_check_mark: 成功' + '\n' + Result.Signin_AD_Msg
-        if Result.Signin_AD == Status.done:  singin_result['signin_ad'] = ':bell: 已完成'
+        if Result.Signin_AD == Status.error: result['signin_ad'] = error_string
+        if Result.Signin_AD == Status.yes:   result['signin_ad'] = success_string.format(Result.Signin_AD_Msg)
+        if Result.Signin_AD == Status.done:  result['signin_ad'] = done_string
     if Result.Guild_Signin != Status.no:
-        if Result.Guild_Signin == Status.error: singin_result['guild_signin'] = ':x: 錯誤'
-        if Result.Guild_Signin == Status.yes:
-            singin_result['guild_signin'] = ':white_check_mark: 成功' + '\n' + Result.Guild_Signin_Msg
-        if Result.Guild_Signin == Status.done:  singin_result['guild_signin'] = ':bell: 已完成'
+        if Result.Guild_Signin == Status.error: result['guild_signin'] = error_string
+        if Result.Guild_Signin == Status.yes:   result['guild_signin'] = success_string.format(Result.Guild_Signin_Msg)
+        if Result.Guild_Signin == Status.done:  result['guild_signin'] = done_string
     if Result.Ani_Answer != Status.no:
-        if Result.Ani_Answer == Status.error: singin_result['ani_answer'] = ':x: 錯誤'
-        if Result.Ani_Answer == Status.yes:
-            singin_result['ani_answer'] = ':white_check_mark: 成功' + '\n' + Result.Ani_Answer_Msg
-            singin_result['ani_answer_msg'] = Result.Ani_Answer_Msg
-        if Result.Ani_Answer == Status.done:  singin_result['ani_answer'] = ':bell: 已完成'
-    return account_info, singin_result
+        if Result.Ani_Answer == Status.error: result['ani_answer'] = error_string
+        if Result.Ani_Answer == Status.yes:   result['ani_answer'] = success_string.format(Result.Ani_Answer_Msg)
+        if Result.Ani_Answer == Status.done:  result['ani_answer'] = done_string
+
+    return {'info': info, 'result': result}
  
-def TG_SendMessage(text):
+def Telegram_SendMessage(text):
     try:
-        r = requests.get(f'https://api.telegram.org/bot{TG_TOKEN}/sendMessage?chat_id={TG_CHAT}&parse_mode=Markdown&text={text}')
+        requests.get(f'https://api.telegram.org/bot{TG_TOKEN}/sendMessage?chat_id={TG_CHAT}&parse_mode=Markdown&text={text}')
     except:
         pass
 
-def Discord_SendEmbed(account_info: dict, singin_result: dict):
+def Discord_SendEmbed(data):
     try:
+        info = data.get('info')
+        result = data.get('result')
         payload = {
             'username': '巴哈姆特自動簽到機器人',
             'avatar_url': 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
@@ -340,13 +340,13 @@ def Discord_SendEmbed(account_info: dict, singin_result: dict):
                 'description': '',
                 'color': 0x0099AF,
                 'fields': [
-                    {'name': '巴幣', 'value': account_info['gold'], 'inline': True},
-                    {'name': 'GP', 'value': account_info['gp'], 'inline': True},
-                    {'name': 'LV', 'value': account_info['level'], 'inline': True},
-                    {'name': '種族', 'value': account_info['race'], 'inline': True},
-                    {'name': '簽到天數', 'value': account_info['signDays'], 'inline': True},
-                    {'name': '上次簽到', 'value': account_info['lastSign'], 'inline': True}
-                    ],
+                    {'name': '巴幣', 'value': info.get('gold'), 'inline': True},
+                    {'name': 'GP', 'value': info.get('gp'), 'inline': True},
+                    {'name': 'LV', 'value': info.get('level'), 'inline': True},
+                    {'name': '種族', 'value': info.get('race'), 'inline': True},
+                    {'name': '簽到天數', 'value': info.get('signDays'), 'inline': True},
+                    {'name': '上次簽到', 'value': info.get('lastSign'), 'inline': True}
+                ],
                 'footer': {'text': '更新時間'},
                 'timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 'thumbnail': {'url': Result.Profile.get('avatar')},
@@ -355,15 +355,15 @@ def Discord_SendEmbed(account_info: dict, singin_result: dict):
                 'description': '',
                 'color': 0x0099AF,
                 'fields': [
-                    {'name': '主頁簽到', 'value': singin_result['signin'], 'inline': True},
-                    {'name': '公會簽到', 'value': singin_result['guild_signin'], 'inline': True},
-                    {'name': '動漫瘋答題', 'value': singin_result['ani_answer'], 'inline': True}
-                    ],
+                    {'name': '主頁簽到', 'value': result.get('signin'), 'inline': True},
+                    {'name': '公會簽到', 'value': result.get('guild_signin'), 'inline': True},
+                    {'name': '動漫瘋答題', 'value': result.get('ani_answer'), 'inline': True}
+                ],
                 'footer': {'text': '更新時間'},
-                'timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}
-            ]
+                'timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            }]
         }
-        r = requests.post(f'{DISCORD_WEBHOOK}', json=payload)
+        requests.post(f'{DISCORD_WEBHOOK}', json=payload)
     except:
         pass
 
@@ -394,9 +394,11 @@ if __name__ == "__main__":
     AniAnswer()
 
     text = GetSummary()
-    account_info, singin_result = GetSummary_Dict()
+    data = GetDiscordSummary()
+    
     if datetime.datetime.now().hour < 8:
-        TG_SendMessage(text)
-        Discord_SendEmbed(account_info, singin_result)
-    print(text) 
+        Telegram_SendMessage(text)
+        Discord_SendEmbed(data)
+
+    print(text)
     sys.exit(0)
