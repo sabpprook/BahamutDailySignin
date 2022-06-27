@@ -330,6 +330,8 @@ def TG_SendMessage(text):
 def Discord_SendEmbed(account_info: dict, singin_result: dict):
     try:
         payload = {
+            'username': '巴哈姆特自動簽到機器人',
+            'avatar_url': 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
             'content': '',
             'embeds': [{
                 'title': '帳號資訊',
@@ -343,8 +345,8 @@ def Discord_SendEmbed(account_info: dict, singin_result: dict):
                     {'name': '簽到天數', 'value': account_info['signDays'], 'inline': True},
                     {'name': '上次簽到', 'value': account_info['lastSign'], 'inline': True}
                     ],
-                'footer': {'text': '更新時間', 'icon_url': 'https://upload.wikimedia.org/wikipedia/zh/a/a5/Bahamut_Logo.svg'},
-                'timestamp': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')},
+                'footer': {'text': '更新時間'},
+                'timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')},
                 {'title': '簽到資訊',
                 'description': '',
                 'color': 0x0099AF,
@@ -353,8 +355,8 @@ def Discord_SendEmbed(account_info: dict, singin_result: dict):
                     {'name': '公會簽到', 'value': singin_result['guild_signin'], 'inline': True},
                     {'name': '動漫瘋答題', 'value': singin_result['ani_answer'], 'inline': True}
                     ],
-                'footer': {'text': '更新時間', 'icon_url': 'https://upload.wikimedia.org/wikipedia/zh/a/a5/Bahamut_Logo.svg'},
-                'timestamp': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+                'footer': {'text': '更新時間'},
+                'timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}
             ]
         }
         r = requests.post(f'{DISCORD_WEBHOOK}', json=payload)
