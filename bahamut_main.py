@@ -346,7 +346,9 @@ def Discord_SendEmbed(account_info: dict, singin_result: dict):
                     {'name': '上次簽到', 'value': account_info['lastSign'], 'inline': True}
                     ],
                 'footer': {'text': '更新時間'},
-                'timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')},
+                'timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                'thumbnail': {'url': Result.Profile.get('avatar')},
+                'author': {'name': Result.Profile.get('userid'), 'url': Result.Profile.get('avatar_s'), 'icon_url': Result.Profile.get('avatar_s')} },
                 {'title': '簽到資訊',
                 'description': '',
                 'color': 0x0099AF,
@@ -395,5 +397,5 @@ if __name__ == "__main__":
     if datetime.datetime.now().hour < 3:
         TG_SendMessage(text)
         # Discord_SendEmbed(account_info, singin_result)
-    print(text)    
+    print(text) 
     sys.exit(0)
