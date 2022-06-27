@@ -173,6 +173,39 @@ def Signin_AD():
         return
     Status.Signin_AD = Status.yes
 
+def GuildSignin():
+    r = session.get(Api.GUILD_MY_GUILD)
+    if r.status_code != requests.codes.ok:
+        Result.Guild_Signin = Status.error
+        return
+    try:
+        list = r.json().get('data').get('list')
+    except:
+        Result.Guild_Signin = Status.error
+        return
+    for guild in list:
+        Result.Guild.update(guild)
+        gsn = guild.get('sn')
+        title = guild.get('title')
+        data =  { 'gsn': gsn }
+        data.update(bahamutCsrfToken)
+        r = session.post(Api.GUILD_SIGN, data = data)
+        if r.status_code != requests.codes.ok:
+            Result.Guild_Signin = Status.error
+            continue
+        try:
+            data = r.json().get('data')
+            statusCode = data.get('statusCode')
+            message = data.get('message')
+            if statusCode != None:
+                if statusCode:
+                    Result.Guild_Signin = Status.yes
+                else:
+                    Result.Guild_Signin = Status.done
+                Result.Guild_Signin_Msg += f'({title}): {message}\n'
+        except:
+            Result.Guild_Signin = Status.error
+
 def GetAniAnswer():
     r = session.get(f'{Api.HOME_INDEX}?owner=blackXblue&page=1')
     if r.status_code != requests.codes.ok:
@@ -221,37 +254,6 @@ def AniAnswer():
     else:
         Result.Ani_Answer = Status.error
 
-def GuildSignin():
-    r = session.get(Api.GUILD_MY_GUILD)
-    if r.status_code != requests.codes.ok:
-        Result.Guild_Signin = Status.error
-        return
-    try:
-        guild = r.json().get('data').get('list')[0]
-        Result.Guild = guild
-    except:
-        Result.Guild_Signin = Status.error
-        return
-    gsn = guild.get('sn')
-    data =  { 'gsn': gsn }
-    data.update(bahamutCsrfToken)
-    r = session.post(Api.GUILD_SIGN, data = data)
-    if r.status_code != requests.codes.ok:
-        Result.Guild_Signin = Status.error
-        return
-    try:
-        data = r.json().get('data')
-        statusCode = data.get('statusCode')
-        message = data.get('message')
-        if statusCode != None:
-            if statusCode:
-                Result.Guild_Signin = Status.yes
-            else:
-                Result.Guild_Signin = Status.done
-            Result.Guild_Signin_Msg = message
-    except:
-        Result.Guild_Signin = Status.error
-
 def GetSummary():
     text = ''
     user = Result.Profile
@@ -273,9 +275,9 @@ def GetSummary():
         if Result.Signin_AD == Status.yes:   text += f'✅ 主頁加倍\n_{Result.Signin_AD_Msg}_\n'
         if Result.Signin_AD == Status.done:  text += '🔔 主頁加倍\n'
     if Result.Guild_Signin != Status.no:
-        if Result.Guild_Signin == Status.error: text += f'❌ 公會簽到 ({guild.get("title")})\n'
-        if Result.Guild_Signin == Status.yes:   text += f'✅ 公會簽到 ({guild.get("title")})\n_{Result.Guild_Signin_Msg}_\n'
-        if Result.Guild_Signin == Status.done:  text += f'🔔 公會簽到 ({guild.get("title")})\n'
+        if Result.Guild_Signin == Status.error: text += f'❌ 公會簽到\n'
+        if Result.Guild_Signin == Status.yes:   text += f'✅ 公會簽到\n_{Result.Guild_Signin_Msg}_\n'
+        if Result.Guild_Signin == Status.done:  text += f'🔔 公會簽到\n'
     if Result.Ani_Answer != Status.no:
         if Result.Ani_Answer == Status.error: text += '❌ 動漫瘋答題\n'
         if Result.Ani_Answer == Status.yes:   text += f'✅ 動漫瘋答題\n_{Result.Ani_Answer_Msg}_\n'
@@ -388,13 +390,13 @@ if __name__ == "__main__":
 
     Signin()
     Signin_AD()
-    AniAnswer()
     GuildSignin()
+    AniAnswer()
 
     text = GetSummary()
     account_info, singin_result = GetSummary_Dict()
     Discord_SendEmbed(account_info, singin_result)
-    if datetime.datetime.now().hour < 3:
+    if datetime.datetime.now().hour < 8:
         TG_SendMessage(text)
         # Discord_SendEmbed(account_info, singin_result)
     print(text) 
