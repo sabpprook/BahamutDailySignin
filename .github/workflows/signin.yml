@@ -35,6 +35,7 @@ jobs:
           BAHA_2FACODE: ${{ github.event.inputs.code }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: python ${GITHUB_WORKSPACE}/bahamut_main.py >> $GITHUB_STEP_SUMMARY
 
       - uses: hmanzur/actions-set-secret@v2.0.0
