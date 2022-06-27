@@ -2,8 +2,8 @@
 請先 Fork 該專案到您自己的 Github 帳號
 
 該專案需要加入以下的 Actions secrets
-* ```BAHA_PASSWORD``` _巴哈姆特帳號_
-* ```BAHA_USERNAME``` _巴哈姆特密碼_
+* ```BAHA_USERNAME``` _巴哈姆特帳號_
+* ```BAHA_PASSWORD``` _巴哈姆特密碼_
 * ```GH_TOKEN``` _Github API Token_
 * ```TG_CHAT``` _Telegram Chat_Id_ *非必要*
 * ```TG_TOKEN``` _Telegram Bot Token_ *非必要*
