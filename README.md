@@ -7,6 +7,7 @@
 * ```GH_TOKEN``` _Github API Token_
 * ```TG_CHAT``` _Telegram Chat_Id_ *非必要*
 * ```TG_TOKEN``` _Telegram Bot Token_ *非必要*
+* ```DISCORD_WEBHOOK``` _Discord Webhook URL_ *非必要*
 
 > ![sshot-4](https://user-images.githubusercontent.com/7044575/175803790-74da35ac-4a33-48c6-b103-0b9169977752.png)
 
@@ -25,6 +26,11 @@
 > ```TG_CHAT``` 可從以下網址取得 ID，請自行帶入 Bot Token
 >
 > https://api.telegram.org/bot<TG_TOKEN>/getUpdates
+
+### Discord Webhook
+需要 Discord 傳送通知訊息請自行建立 Discord Webhook 網址，本文檔不解釋如何操作
+
+> ```DISCORD_WEBHOOK``` Discord Channel -> 頻道設定 -> 整合 -> 建立webhook -> 複製 Webhook 網址
 
 # 開始使用
 請到自己的 BahamutDailySignin 專案 -> Actions -> Signin
