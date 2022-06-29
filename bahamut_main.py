@@ -8,7 +8,6 @@ import enum
 import json
 import time
 import base64
-from typing import Dict
 import urllib3
 import datetime
 import requests
@@ -168,11 +167,11 @@ def Signin_AD():
     if r.status_code != requests.codes.ok:
         Result.Signin_AD = Status.error
         return
+    Status.Signin_AD = Status.yes
     finish = r.json().get('data').get('finished')
     if finish != 1:
         Result.Signin_AD = Status.error
         return
-    Status.Signin_AD = Status.yes
 
 def GuildSignin():
     r = session.get(Api.GUILD_MY_GUILD)
@@ -395,7 +394,7 @@ if __name__ == "__main__":
 
     text = GetSummary()
     data = GetDiscordSummary()
-    
+
     if datetime.datetime.now().hour < 8:
         Telegram_SendMessage(text)
         Discord_SendEmbed(data)
