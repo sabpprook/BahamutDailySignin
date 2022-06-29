@@ -33,9 +33,9 @@
 > ```DISCORD_WEBHOOK``` Discord Channel -> 頻道設定 -> 整合 -> 建立webhook -> 複製 Webhook 網址
 
 # 開始使用
-請到自己的 BahamutDailySignin 專案 -> Actions -> Signin
+請到自己的 BahamutDailySignin 專案 -> Actions -> **巴哈姆特每日簽到**
 
-> ![sshot-5](https://user-images.githubusercontent.com/7044575/175804124-830fd1e4-e356-43cd-a586-74996e660381.png)
+> ![sshot-4](https://user-images.githubusercontent.com/7044575/176356890-6bcc55c4-ae00-4fdd-aacd-b8d1155b2354.png)
 
 如果有設定兩階段驗證登入，請在 2FA Code 填入驗證碼 (注意時效性)
 
@@ -45,6 +45,9 @@
 
 往後的排程執行就會自動登入並實時更新 Cookies
 
-> ![sshot-6](https://user-images.githubusercontent.com/7044575/175804266-012c3480-9627-4767-a0fb-b2fc9aac2385.png)
+> ![sshot-3](https://user-images.githubusercontent.com/7044575/176356715-a653782a-789b-44e4-8f4e-2cddd0cf7d61.png)
+> 
+> ![sshot-2](https://user-images.githubusercontent.com/7044575/176356442-84eaabb1-d254-4bd0-9f72-9eaf1c02435d.png)
+> ![sshot-1](https://user-images.githubusercontent.com/7044575/176356233-059c2b80-5cf4-4d55-8f31-7ef0ae0f111b.png)
 
 若有其他問題歡迎提交 Issues 並在底下討論
