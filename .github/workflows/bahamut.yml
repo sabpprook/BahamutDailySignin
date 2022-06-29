@@ -2,7 +2,7 @@ name: 巴哈姆特每日簽到
 
 on:
   schedule:
-      - cron:  '10 0 * * *'
+      - cron:  '10 16 * * *'
 
   workflow_dispatch:
     inputs:
