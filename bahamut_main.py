@@ -396,9 +396,8 @@ if __name__ == "__main__":
     text = GetSummary()
     data = GetDiscordSummary()
     
-    if datetime.datetime.now().hour < 8:
-        Telegram_SendMessage(text)
-        Discord_SendEmbed(data)
+    Telegram_SendMessage(text)
+    Discord_SendEmbed(data)
 
     print(text)
     sys.exit(0)
