@@ -40,12 +40,19 @@ jobs:
 
       - uses: hmanzur/actions-set-secret@v2.0.0
         with:
-          visibility: 'private'
-          name: 'BAHA_COOKIES'
+          visibility: private
+          name: BAHA_COOKIES_OLD
+          value: ${{ secrets.BAHA_COOKIES }}
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: hmanzur/actions-set-secret@v2.0.0
+        with:
+          visibility: private
+          name: BAHA_COOKIES
           value: ${{ env.BAHA_COOKIES }}
           token: ${{ secrets.GH_TOKEN }}
 
       - uses: GitRML/delete-workflow-runs@main
         with:
-          retain_days: 5
+          retain_days: 3
           keep_minimum_runs: 10
