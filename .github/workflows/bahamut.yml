@@ -36,21 +36,9 @@ jobs:
           TG_CHAT: ${{ secrets.TG_CHAT }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: python ${GITHUB_WORKSPACE}/bahamut_main.py >> $GITHUB_STEP_SUMMARY
-
-      - uses: hmanzur/actions-set-secret@v2.0.0
-        with:
-          visibility: private
-          name: BAHA_COOKIES_OLD
-          value: ${{ secrets.BAHA_COOKIES }}
-          token: ${{ secrets.GH_TOKEN }}
-
-      - uses: hmanzur/actions-set-secret@v2.0.0
-        with:
-          visibility: private
-          name: BAHA_COOKIES
-          value: ${{ env.BAHA_COOKIES }}
-          token: ${{ secrets.GH_TOKEN }}
 
       - uses: GitRML/delete-workflow-runs@main
         with:
