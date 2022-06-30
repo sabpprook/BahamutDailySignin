@@ -126,7 +126,11 @@ def UpdateCookie():
     try:
         cookie = json.dumps(session.cookies.get_dict())
         cookie = base64.b64encode(cookie.encode('UTF-8')).decode('UTF-8')
-
+        with open('cookies.txt', 'w', encoding='UTF-8') as file:
+            file.write(cookie)
+    except:
+        pass
+    try:
         base_url = f'https://api.github.com/repos/{GH_REPO}/actions/secrets'
         headers = { 'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token {GH_TOKEN}'}
         r = requests.get(f'{base_url}/public-key', headers=headers)
@@ -134,11 +138,8 @@ def UpdateCookie():
         key_id = r.json().get('key_id')
         encrypted_value = encrypt(key, cookie)
         r = requests.put(f'{base_url}/BAHA_COOKIES', headers=headers, json={ 'encrypted_value': encrypted_value, 'key_id': key_id })
-
-        with open('cookies.txt', 'w', encoding='UTF-8') as file:
-            file.write(cookie)
     except:
-        return
+        assert False,'Error occurs while updating cookies!'
 
 def Profile():
     r = session.get(Api.PROFILE)
