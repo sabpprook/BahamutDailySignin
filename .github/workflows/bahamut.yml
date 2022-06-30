@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: 3.x
 
-      - run: pip install urllib3 requests
+      - run: pip install PyNaCl urllib3 requests
 
       - uses: szenius/set-timezone@v1.0
         with:
