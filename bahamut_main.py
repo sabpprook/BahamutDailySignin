@@ -11,6 +11,13 @@ import base64
 import urllib3
 import datetime
 import requests
+from base64 import b64encode
+from nacl import encoding, public
+
+# Github
+GH_REPO = os.getenv('GH_REPO')
+GH_TOKEN = os.getenv('GH_TOKEN')
+GITHUB_ENV = os.getenv('GITHUB_ENV')
 
 # plain text
 BAHA_USERNAME = os.getenv('BAHA_USERNAME')
@@ -26,8 +33,6 @@ TG_TOKEN = os.getenv('TG_TOKEN')
 
 # Discord Webhook
 DISCORD_WEBHOOK = os.getenv('DISCORD_WEBHOOK')
-
-GITHUB_ENV = os.getenv('GITHUB_ENV')
 
 app_headers = {
     'User-Agent': 'Bahadroid (https://www.gamer.com.tw/)',
@@ -111,17 +116,30 @@ def Login():
     else:
         return (True, data.get('userid'))
 
+def encrypt(public_key: str, secret_value: str) -> str:
+    public_key = public.PublicKey(public_key.encode("utf-8"), encoding.Base64Encoder())
+    sealed_box = public.SealedBox(public_key)
+    encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
+    return b64encode(encrypted).decode("utf-8")
+
 def UpdateCookie():
     try:
         cookie = json.dumps(session.cookies.get_dict())
         cookie = base64.b64encode(cookie.encode('UTF-8')).decode('UTF-8')
         with open('cookies.txt', 'w', encoding='UTF-8') as file:
             file.write(cookie)
-        if GITHUB_ENV != None:
-            with open(GITHUB_ENV, 'a') as file:
-                file.write(f'BAHA_COOKIES={cookie}')
     except:
-        return
+        pass
+    try:
+        base_url = f'https://api.github.com/repos/{GH_REPO}/actions/secrets'
+        headers = { 'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token {GH_TOKEN}'}
+        r = requests.get(f'{base_url}/public-key', headers=headers)
+        key = r.json().get('key')
+        key_id = r.json().get('key_id')
+        encrypted_value = encrypt(key, cookie)
+        r = requests.put(f'{base_url}/BAHA_COOKIES', headers=headers, json={ 'encrypted_value': encrypted_value, 'key_id': key_id })
+    except:
+        assert False,'Error occurs while updating cookies!'
 
 def Profile():
     r = session.get(Api.PROFILE)
